@@ -144,13 +144,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User updateUser(String currentUsername, String newFirstName, String newLastName, String newUsername, String newEmail, String role, boolean isNonLocked, boolean isActive, MultipartFile profileImage) throws EmailExistException, UsernameExistException, IOException {
+    public User updateUser(String currentUsername, String newFirstName, String newLastName, String newUsername, String newPassword, String newEmail, String role, boolean isNonLocked, boolean isActive, MultipartFile profileImage) throws EmailExistException, UsernameExistException, IOException {
         User currentUser = validateNewUsernameAndEmail(currentUsername, newUsername, newEmail);
         assert currentUser != null;
         currentUser.setFirstName(newFirstName);
         currentUser.setLastName(newLastName);
         currentUser.setJoinDate(new Date());
         currentUser.setUsername(newUsername);
+        currentUser.setPassword(encodePassword(newPassword));
         currentUser.setEmail(newEmail);
         currentUser.setActive(isActive);
         currentUser.setNotLocked(isNonLocked);
@@ -167,7 +168,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void resetPassword(String email) throws EmailNotFoundException, MessagingException {
+    public String resetPassword(String email) throws EmailNotFoundException, MessagingException {
         User user = userRepository.findUserByEmail(email);
         if (user == null) {
             throw new EmailNotFoundException(USER_NOT_FOUND_BY_EMAIL + SPACE + email);
@@ -175,7 +176,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         String password = generatePassword();
         user.setPassword(encodePassword(password));
         userRepository.save(user);
-        emailService.sendNewPasswordEmail(user.getFirstName(), password, user.getEmail());
+
+        return password;
+//        emailService.sendNewPasswordEmail(user.getFirstName(), password, user.getEmail());
     }
 
     @Override

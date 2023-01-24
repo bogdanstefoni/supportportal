@@ -4,6 +4,7 @@ import com.bogdan.supportportal.domain.User;
 import com.bogdan.supportportal.exception.domain.EmailExistException;
 import com.bogdan.supportportal.exception.domain.EmailNotFoundException;
 import com.bogdan.supportportal.exception.domain.UsernameExistException;
+import jakarta.mail.MessagingException;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -24,12 +25,12 @@ public interface UserService {
                     boolean isActive, MultipartFile profileImage) throws EmailExistException, UsernameExistException, IOException;
 
     User updateUser(String currentUsername, String newFirstName, String newLastName, String newUsername,
-                    String newEmail, String role, boolean isNonLocked,
+                    String newPassword, String newEmail, String role, boolean isNonLocked,
                     boolean isActive, MultipartFile profileImage) throws EmailExistException, UsernameExistException, IOException;
 
     void deleteUser(long id);
 
-    void resetPassword(String email) throws EmailNotFoundException, jakarta.mail.MessagingException;
+    String resetPassword(String email) throws EmailNotFoundException, MessagingException;
 
     User updateProfileImage(String username, MultipartFile profileImage) throws EmailExistException, UsernameExistException, IOException;
 }

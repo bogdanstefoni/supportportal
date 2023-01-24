@@ -90,6 +90,7 @@ public class UserResource extends ExceptionHandling {
                                        @RequestParam("firstName") String firstName,
                                        @RequestParam("lastName") String lastName,
                                        @RequestParam("username") String username,
+                                       @RequestParam("password") String password,
                                        @RequestParam("email") String email,
                                        @RequestParam("role") String role,
                                        @RequestParam("isActive") String isActive,
@@ -97,7 +98,7 @@ public class UserResource extends ExceptionHandling {
                                        @RequestParam(value = "profileImage", required = false) MultipartFile profileImage)
             throws EmailExistException, IOException, UsernameExistException {
 
-        User updatedUser = userService.updateUser(currentUser, firstName, lastName, username, email, role,
+        User updatedUser = userService.updateUser(currentUser, firstName, lastName, username, password, email, role,
                 Boolean.parseBoolean(isActive), Boolean.parseBoolean(isNonLocked), profileImage);
 
         return new ResponseEntity<>(updatedUser, OK);
@@ -117,11 +118,13 @@ public class UserResource extends ExceptionHandling {
         return new ResponseEntity<>(users, OK);
     }
 
-    @GetMapping("/resetPassword/{email}")
+    @GetMapping("/reset-password/{email}")
     public ResponseEntity<HttpResponse> resetPassword(@PathVariable("email") String email) throws EmailNotFoundException, MessagingException {
-        userService.resetPassword(email);
 
-        return response(OK, EMAIL_SENT + email);
+        User user = userService.findUserByEmail(email);
+        user.setPassword(userService.resetPassword(email));
+//        return response(OK, EMAIL_SENT + email);
+        return response(OK, "New password " + user.getPassword());
     }
 
     @DeleteMapping("/delete/{id}")
@@ -167,7 +170,7 @@ public class UserResource extends ExceptionHandling {
 
     private ResponseEntity<HttpResponse> response(HttpStatus httpStatus, String message) {
         HttpResponse body = new HttpResponse(httpStatus.value(), httpStatus,
-                httpStatus.getReasonPhrase().toUpperCase(), message.toUpperCase());
+                httpStatus.getReasonPhrase().toUpperCase(), message);
 
         return new ResponseEntity<>(body, httpStatus);
     }
