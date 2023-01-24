@@ -84,12 +84,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 
     @Override
-    public User register(String firstName, String lastName, String username, String email)
+    public User register(String firstName, String lastName, String username, String email, String password)
             throws EmailExistException, UsernameExistException, MessagingException {
         validateNewUsernameAndEmail(EMPTY, username, email);
         User user = new User();
         user.setUserId(generateUserId());
-        String password = generatePassword();
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setUsername(username);
@@ -103,7 +102,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         user.setProfileImageUrl(getTemporaryProfileImage(username));
         user.setPort(registerPort());
         userRepository.save(user);
-        emailService.sendNewPasswordEmail(firstName, password, email);
+//        emailService.sendNewPasswordEmail(firstName, password, email);
         return user;
     }
 
