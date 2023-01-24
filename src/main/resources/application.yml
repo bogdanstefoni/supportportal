@@ -1,0 +1,29 @@
+jwt:
+  secret: '[a-zA-Z0-9._]^+$Guidelines89797987forAlphabeticalArraNumeralsandOtherSymbo$'
+
+
+server:
+  port: 8081
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/supportportal?useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&useSSL=false
+    password: root
+    username: root
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: bogdanstefoni.dev@gmail.com
+    password: cujhwbufyfbyqgay
+#    properties:
+#      mail:
+#        smtp:
+#          auth: true
+#          starttls:
+#            enable: true
+#        transport:
+#          protocol: smtp
